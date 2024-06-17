@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GoogleMobileAds.Api;
+using UnityEngine.UI;
 
 public class AdsController : MonoBehaviour
 {
@@ -9,18 +10,41 @@ public class AdsController : MonoBehaviour
     RewardedAd rewardedAd;
     InterstitialAd interstitialAd;
     public string _RwdAdUnitId;
+    [SerializeField] private Button _adInspector, _loadInterstitial, _showInterstitial, _loadRewarded, _showRewarded;
+
     // Start is called before the first frame update
     void Start()
     {
         MobileAds.Initialize((InitializationStatus initStatus) =>
         {
-            LoadRewardedAd();
-            LoadInterstitialAd();
+            //LoadRewardedAd();
+            //LoadInterstitialAd();
+            SetButtonsAction();
         });
+    }
+
+    private void SetButtonsAction()
+    {
+        _adInspector.onClick.RemoveAllListeners();
+        _adInspector.onClick.AddListener(OpenInspector);
+
+        _loadInterstitial.onClick.RemoveAllListeners();
+        _loadInterstitial.onClick.AddListener(LoadInterstitialAd);
+
+        _showInterstitial.onClick.RemoveAllListeners();
+        _showInterstitial.onClick.AddListener(ShowAd);
+
+        _loadRewarded.onClick.RemoveAllListeners();
+        _loadRewarded.onClick.AddListener(LoadRewardedAd);
+
+        _showRewarded.onClick.RemoveAllListeners();
+        _showRewarded.onClick.AddListener(ShowRewardedAd);
+
     }
     public void OpenInspector()
     {
-        MobileAds.OpenAdInspector(error => {
+        MobileAds.OpenAdInspector(error =>
+        {
             // Error will be set if there was an issue and the inspector was not displayed.
         });
     }
@@ -126,9 +150,9 @@ public class AdsController : MonoBehaviour
         Debug.Log("Loading the interstitial ad.");
 
         // create our request used to load the ad.
-        var adRequest = new AdRequest();            
-                //.AddKeyword("unity-admob-sample")
-                //.Build();
+        var adRequest = new AdRequest();
+        //.AddKeyword("unity-admob-sample")
+        //.Build();
 
         // send the request to load the ad.
         InterstitialAd.Load(_IntAdUnitId, adRequest,
